@@ -2,6 +2,12 @@ import time
 from selenium import webdriver
 from seleniumCookieInjection import cookieInjection
 
+# 优化方案
+# 1. 通过黑名单添加，避开外包公司
+# 2. 通过关键词匹配率算法，优化决策准确率
+# 3. 通过记录每个沟通过的人，记录在30分钟内回复的人，记录在30分钟内没有回复的人进行数据挖掘，回复率分析，用以优化回复率
+
+
 def run(list, nowpage=0):
     if (nowpage > 1):
         nowpage = (nowpage - 1) * 29
@@ -13,6 +19,7 @@ def run(list, nowpage=0):
         driver.implicitly_wait(3)
         if (driver.find_element_by_class_name('btn-container').text == '立即沟通'):
             print("已投递人数", (nowpage + (x + 1)), "请及时给与别人回复")
+
             driver.find_element_by_class_name('btn-container').click()
             try:
                 if (len(driver.find_element_by_class_name("dialog-container").text)<50):
@@ -29,16 +36,16 @@ def run(list, nowpage=0):
 driver = webdriver.Chrome()
 driver.maximize_window()
 cookieInjection.loadingLocalCookie(driver,"https://www.zhipin.com/","D:\Python code\myobj\Boss.json")
-
-driver.get(
-    "https://www.zhipin.com/c101280600/d_202-e_104/?query=Java%E9%AB%98%E7%BA%A7%E5%BC%80%E5%8F%91%E5%B7%A5%E7%A8%8B%E5%B8%88&period=3&ka=sel-scale-3")
+url=input()
+driver.get(url)
 
 time.sleep(3)
 run(driver.find_elements_by_class_name("job-primary"))
-
 
 while (True):
 
     driver.find_element_by_class_name('next').click()
     run(driver.find_elements_by_class_name("job-primary"),eval(driver.find_element_by_class_name('page').find_element_by_class_name('cur').text))
     driver.implicitly_wait(3)
+
+
